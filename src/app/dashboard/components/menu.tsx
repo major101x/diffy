@@ -26,6 +26,9 @@ export function Menu({
         />
         <button>Analyze PR</button>
       </form>
+      {prState?.pr && (
+        <Link href={`/pull-request/${prState?.pr?.id}`}>View PR</Link>
+      )}
       {prState?.pr && <pre>{JSON.stringify(prState.pr, null, 2)}</pre>}
       {prState?.diff && <pre>{prState.diff}</pre>}
     </>
