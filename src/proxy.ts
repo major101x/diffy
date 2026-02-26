@@ -7,7 +7,11 @@ export default function Proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  if (request.nextUrl.pathname.startsWith("/dashboard") && !cookie) {
+  if (
+    (request.nextUrl.pathname.startsWith("/dashboard") ||
+      request.nextUrl.pathname.startsWith("/pull-request")) &&
+    !cookie
+  ) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 

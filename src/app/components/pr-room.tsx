@@ -32,8 +32,6 @@ export function PRRoom({ prId }: { prId: string }) {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
 
-    socket.emit("join-pr-room", { pullRequestId: prId });
-
     socket.on("joined", (data) => {
       setAlerts((prev) => [...prev, data]);
       console.log(data);
@@ -59,7 +57,6 @@ export function PRRoom({ prId }: { prId: string }) {
       socket.off("pr-room-message", (data) => {
         console.log(data);
       });
-      socket.emit("leave-pr-room", { pullRequestId: prId });
       socket.off("user-count", (data) => {
         console.log(data);
       });
@@ -67,10 +64,12 @@ export function PRRoom({ prId }: { prId: string }) {
   }, [prId]);
 
   return (
-    <div className="p-5">
-      <h1>PR Room {prId}</h1>
-      <p>Connected: {isConnected.toString()}</p>
-      <p>User Count: {userCount}</p>
+    <div className="p-5 border border-gray-200 rounded-lg w-full">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">PR Room {prId}</h1>
+        <p>Connected: {isConnected.toString()}</p>
+        <p>User Count: {userCount}</p>
+      </div>
 
       {alerts.map((alert, index) => (
         <p key={index}>{alert}</p>

@@ -6,7 +6,14 @@ type FetchPRState = {
   diff: string | null;
 };
 
-export async function fetchData(url: string, type: "json" | "text" = "json") {
+export async function fetchData(
+  url: string,
+  type: "json" | "text" = "json",
+  options?: {
+    method?: "GET" | "POST" | "PUT" | "DELETE";
+    body?: string;
+  },
+) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
 
@@ -17,7 +24,9 @@ export async function fetchData(url: string, type: "json" | "text" = "json") {
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${token?.value}`,
+      "Content-Type": "application/json",
     },
+    ...options,
   });
 
   console.log(response);
@@ -57,7 +66,31 @@ export async function fetchPR(
     ),
   ]);
   const [pullRequest, diff] = await prAndDiff;
-  console.log(pullRequest);
-  console.log(diff);
   return { pr: pullRequest, diff };
+}
+
+export async function createComment(prId: string, formData: FormData) {
+  const comment = formData.get("comment")?.toString();
+  const filePath = formData.get("filePath")?.toString();
+  const lineNumber = Number(formData.get("lineNumber"));
+  console.log("PAYLOAD:", {
+    body: comment,
+    pullRequestId: Number(prId),
+    filePath,
+    lineNumber,
+  });
+  const response = await fetchData(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments`,
+    "json",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        body: comment,
+        pullRequestId: Number(prId),
+        filePath,
+        lineNumber,
+      }),
+    },
+  );
+  return response;
 }
