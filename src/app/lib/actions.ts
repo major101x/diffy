@@ -29,7 +29,6 @@ export async function fetchData(
     ...options,
   });
 
-  console.log(response);
   if (!response.ok) {
     throw new Error("Failed to fetch data on the server");
   }
@@ -41,6 +40,13 @@ export async function fetchData(
   const data = await response.text();
 
   return data;
+}
+
+export async function getUser() {
+  const user = await fetchData(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/me`,
+  );
+  return user;
 }
 
 export async function fetchPR(

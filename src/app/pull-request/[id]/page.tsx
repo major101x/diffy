@@ -1,4 +1,4 @@
-import { fetchData } from "@/app/lib/actions";
+import { fetchData, getUser } from "@/app/lib/actions";
 import { PullRequestWrapper } from "@/app/components/pull-request-wrapper";
 
 export default async function PullRequestPage({
@@ -11,5 +11,6 @@ export default async function PullRequestPage({
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/pr/${id}`,
     "json",
   );
-  return <PullRequestWrapper prId={id} prComments={prComments} />;
+  const user = await getUser();
+  return <PullRequestWrapper prId={id} prComments={prComments} user={user} />;
 }
