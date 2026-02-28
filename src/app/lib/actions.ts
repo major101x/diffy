@@ -1,11 +1,6 @@
 "use server";
 import { cookies } from "next/headers";
 
-type FetchPRState = {
-  pr: Record<string, unknown> | null;
-  diff: string | null;
-};
-
 export async function fetchData(
   url: string,
   type: "json" | "text" = "json",
@@ -49,30 +44,28 @@ export async function getUser() {
   return user;
 }
 
-export async function fetchPR(
-  prevState: FetchPRState | null,
-  formData: FormData,
-): Promise<FetchPRState> {
+import { redirect } from "next/navigation";
+
+export async function redirectToPR(formData: FormData) {
   const prUrl = formData.get("prUrl")?.toString();
-  const regex = /https:\/\/www\.github\.com\/([^/]+)\/([^/]+)\/pull\/([\d]+)/;
-  const match = prUrl?.match(regex);
+  const regex = /https:\/\/github\.com\/([^/]+)\/([^/]+)\/pull\/([\d]+)/;
+  // Fallback to match www just in case
+  const regexWww =
+    /https:\/\/www\.github\.com\/([^/]+)\/([^/]+)\/pull\/([\d]+)/;
+
+  const match = prUrl?.match(regex) || prUrl?.match(regexWww);
+
   if (!match) {
-    throw new Error("Invalid pull request URL");
+    throw new Error(
+      "Invalid pull request URL. Please use standard GitHub PR URL format.",
+    );
   }
+
   const owner = match[1];
   const repo = match[2];
   const pull_number = Number(match[3]);
-  const prAndDiff = Promise.all([
-    fetchData(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/github/pull-request/${owner}/${repo}/${pull_number}`,
-    ),
-    fetchData(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/github/diff/${owner}/${repo}/${pull_number}`,
-      "text",
-    ),
-  ]);
-  const [pullRequest, diff] = await prAndDiff;
-  return { pr: pullRequest, diff };
+
+  redirect(`/pull-request/${owner}/${repo}/${pull_number}`);
 }
 
 export async function createComment(prId: string, formData: FormData) {

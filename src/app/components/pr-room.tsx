@@ -12,6 +12,7 @@ export function PRRoom({ prId, user }: { prId: string; user: User }) {
   >([]);
   const [alerts, setAlerts] = useState<string[]>([]);
   const [userCount, setUserCount] = useState(0);
+  const [activeUsers, setActiveUsers] = useState<string[]>([]);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -50,50 +51,65 @@ export function PRRoom({ prId, user }: { prId: string; user: User }) {
       setIsConnected(false);
     }
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-
-    socket.on("joined", (data) => {
+    function onJoined(data: string) {
       setAlerts((prev) => [...prev, data]);
       console.log(data);
-    });
+    }
 
-    socket.on(
-      "pr-room-message",
-      (data: { message: string; username: string }) => {
-        setMessages((prev) => [
-          ...prev,
-          { message: data.message, username: data.username },
-        ]);
-      },
-    );
+    function onLeft(data: string) {
+      setAlerts((prev) => [...prev, data]);
+      console.log(data);
+    }
 
-    socket.on("user-count", (data) => {
+    function onMessage(data: { message: string; username: string }) {
+      setMessages((prev) => [
+        ...prev,
+        { message: data.message, username: data.username },
+      ]);
+    }
+
+    function onActiveUsers(data: string[]) {
+      setActiveUsers(data);
+    }
+
+    function onUserCount(data: { userCount: number }) {
       setUserCount(data.userCount);
-    });
+    }
 
-    socket.on("typing", (data) => {
+    function onTyping(data: { username: string }) {
       setTypingUsers((prev) => Array.from(new Set([...prev, data.username])));
-    });
+    }
 
-    socket.on("stop-typing", (data) => {
+    function onStopTyping(data: { username: string }) {
       setTypingUsers((prev) =>
         prev.filter((username) => username !== data.username),
       );
-    });
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+
+    socket.on("joined", onJoined);
+
+    socket.on("pr-room-message", onMessage);
+
+    socket.on("active-users", onActiveUsers);
+
+    socket.on("user-count", onUserCount);
+
+    socket.on("typing", onTyping);
+
+    socket.on("stop-typing", onStopTyping);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.off("joined", (data) => {
-        console.log(data);
-      });
-      socket.off("pr-room-message", (data) => {
-        console.log(data);
-      });
-      socket.off("user-count", (data) => {
-        console.log(data);
-      });
+      socket.off("joined", onJoined);
+      socket.off("pr-room-message", onMessage);
+      socket.off("user-count", onUserCount);
+      socket.off("typing", onTyping);
+      socket.off("stop-typing", onStopTyping);
+      socket.off("active-users", onActiveUsers);
     };
   }, [prId]);
 
@@ -103,6 +119,12 @@ export function PRRoom({ prId, user }: { prId: string; user: User }) {
         <h1 className="text-2xl font-bold">PR Room {prId}</h1>
         <p>Connected: {isConnected.toString()}</p>
         <p>User Count: {userCount}</p>
+      </div>
+      <div className="flex justify-between items-center">
+        <p>
+          {activeUsers.join(", ")} {activeUsers.length === 1 ? "is" : "are"}{" "}
+          currently reviewing this PR
+        </p>
       </div>
 
       {alerts.map((alert, index) => (
