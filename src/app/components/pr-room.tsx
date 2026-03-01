@@ -114,28 +114,30 @@ export function PRRoom({ prId, user }: { prId: string; user: User }) {
   }, [prId]);
 
   return (
-    <div className="p-5 border border-gray-200 rounded-lg w-full">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">PR Room {prId}</h1>
-        <p>Connected: {isConnected.toString()}</p>
-        <p>User Count: {userCount}</p>
-      </div>
-      <div className="flex justify-between items-center">
-        <p>
-          {activeUsers.join(", ")} {activeUsers.length === 1 ? "is" : "are"}{" "}
-          currently reviewing this PR
-        </p>
-      </div>
+    <div className="p-5 border border-gray-200 rounded-lg w-full h-7/10 flex flex-col justify-between">
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">PR Room {prId}</h1>
+          <p>Connected: {isConnected.toString()}</p>
+          <p>User Count: {userCount}</p>
+        </div>
+        <div className="flex justify-between items-center">
+          <p>
+            {activeUsers.join(", ")} {activeUsers.length === 1 ? "is" : "are"}{" "}
+            currently reviewing this PR
+          </p>
+        </div>
 
-      {alerts.map((alert, index) => (
-        <p key={index}>{alert}</p>
-      ))}
+        {alerts.map((alert, index) => (
+          <p key={index}>{alert}</p>
+        ))}
 
-      {messages.map((message, index) => (
-        <p key={index}>
-          {message.username}: {message.message}
-        </p>
-      ))}
+        {messages.map((message, index) => (
+          <p key={index}>
+            {message.username}: {message.message}
+          </p>
+        ))}
+      </div>
 
       <div className="flex gap-2 mt-5">
         {typingUsers.length > 0 && (
@@ -145,7 +147,8 @@ export function PRRoom({ prId, user }: { prId: string; user: User }) {
         )}
         <input
           type="text"
-          className="border border-gray-300 rounded-md bg-white text-black"
+          className="border border-gray-300 rounded-md bg-white text-black w-full"
+          placeholder="type message here..."
           value={message}
           onChange={handleMessageChange}
         />

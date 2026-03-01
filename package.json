@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "next": "16.1.6",
+    "prism-react-renderer": "^2.4.1",
+    "prismjs": "^1.30.0",
     "react": "19.2.3",
+    "react-diff-view": "^3.3.2",
     "react-dom": "19.2.3",
+    "refractor": "^5.0.0",
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
