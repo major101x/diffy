@@ -17,17 +17,25 @@ export function PRComments({
 }) {
   const [comments, setComments] = useState<Comment[]>(prComments);
 
-  const createCommentWithPrId = createComment.bind(null, prId);
+  const createCommentWithPrId = createComment.bind(null, prId, null);
 
   useEffect(() => {
-    socket.on("newComment", (data) => {
+    const handleNewComment = (data: Comment) => {
       setComments((prev) => [...prev, data]);
-    });
+    };
+
+    const handleUpdateComment = (data: Comment) => {
+      setComments((prev) =>
+        prev.map((comment) => (comment.id === data.id ? data : comment)),
+      );
+    };
+
+    socket.on("newComment", handleNewComment);
+    socket.on("updateComment", handleUpdateComment);
 
     return () => {
-      socket.off("newComment", (data) => {
-        console.log(data);
-      });
+      socket.off("newComment", handleNewComment);
+      socket.off("updateComment", handleUpdateComment);
     };
   }, [prId]);
 
@@ -39,7 +47,7 @@ export function PRComments({
       <h1 className="text-2xl font-bold">Comments</h1>
 
       {commentTree.map((comment) => (
-        <CommentThread comments={[comment]} key={comment.id} />
+        <CommentThread comments={[comment]} key={comment.id} prId={prId} />
       ))}
 
       <form

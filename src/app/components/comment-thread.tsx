@@ -2,7 +2,13 @@ import Image from "next/image";
 import { Comment } from "../types";
 import { CommentItem } from "./comment-item";
 
-export function CommentThread({ comments }: { comments: Comment[] }) {
+export function CommentThread({
+  comments,
+  prId,
+}: {
+  comments: Comment[];
+  prId: string;
+}) {
   return (
     <>
       {comments.map((comment) => (
@@ -29,7 +35,7 @@ export function CommentThread({ comments }: { comments: Comment[] }) {
           {comment.replies &&
             comment.replies.length > 0 &&
             comment.replies.map((reply) => (
-              <CommentItem comment={reply} key={reply.id} />
+              <CommentItem comment={reply} key={reply.id} prId={prId} />
             ))}
         </>
       ))}
