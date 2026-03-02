@@ -24,3 +24,21 @@ export const buildCommentTree = (comments: Comment[]) => {
 
   return rootComments;
 };
+
+export const filterCommentsByResolved = (commentTree: Comment[]) => {
+  return commentTree.filter((comment) => {
+    if (!comment.parentCommentId && !comment.resolved) {
+      if (comment.replies) {
+        comment.replies = filterCommentsByResolved(comment.replies);
+      }
+      return true;
+    }
+    if (comment.parentCommentId && !comment.resolved) {
+      if (comment.replies) {
+        comment.replies = filterCommentsByResolved(comment.replies);
+      }
+      return true;
+    }
+    return false;
+  });
+};
