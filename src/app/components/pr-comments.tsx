@@ -32,7 +32,7 @@ export function PRComments({
   console.log(comments);
 
   return (
-    <div className="flex flex-col gap-4 border border-gray-200 p-4 rounded-lg w-full">
+    <div className="flex flex-col gap-4 justify-between border border-gray-200 p-4 rounded-lg w-full h-3/10">
       <h1 className="text-2xl font-bold">Comments</h1>
 
       {comments.map((comment) => (
@@ -57,28 +57,29 @@ export function PRComments({
         </div>
       ))}
 
-      <form action={createCommentWithPrId}>
-        <input
-          type="text"
-          name="comment"
-          className="border border-gray-300 rounded-md bg-white text-black mr-2"
-          placeholder="Comment"
-        />
+      <form
+        action={createCommentWithPrId}
+        className="flex flex-row flex-wrap gap-2"
+      >
         <input
           type="text"
           name="filePath"
-          className="border border-gray-300 rounded-md bg-white text-black mr-2"
+          className="border border-gray-300 rounded-md bg-white text-black mr-2 px-2"
           placeholder="File Path"
         />
         <input
           type="text"
           name="lineNumber"
-          className="border border-gray-300 rounded-md bg-white text-black mr-2"
+          className="border border-gray-300 rounded-md bg-white text-black mr-2 px-2"
           placeholder="Line Number"
         />
-        <button className="bg-blue-500 text-white px-4 rounded-md h-full">
-          Send
-        </button>
+        <input
+          type="text"
+          name="comment"
+          className="border border-gray-300 rounded-md bg-white text-black grow mr-2 px-2"
+          placeholder="Comment"
+        />
+        <button className="bg-blue-500 text-white px-4 rounded-md">Send</button>
       </form>
     </div>
   );
