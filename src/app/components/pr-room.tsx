@@ -114,7 +114,7 @@ export function PRRoom({ prId, user }: { prId: string; user: User }) {
   }, [prId]);
 
   return (
-    <div className="p-5 border border-gray-200 rounded-lg w-full h-7/10 flex flex-col justify-between">
+    <div className="p-5 border border-gray-200 rounded-lg w-full h-1/2 flex flex-col justify-between">
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">PR Room {prId}</h1>

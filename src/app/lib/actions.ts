@@ -81,6 +81,7 @@ export async function createComment(
     pullRequestId: Number(prId),
     filePath,
     lineNumber,
+    parentCommentId,
   });
   const response = await fetchData(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments`,
@@ -89,7 +90,7 @@ export async function createComment(
       method: "POST",
       body: JSON.stringify({
         body: comment,
-        pullRequestId: Number(prId),
+        pullRequestId: prId,
         filePath,
         lineNumber,
         parentCommentId,
