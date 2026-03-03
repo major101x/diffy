@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Comment, PullRequest, User } from "../types";
 import { PRComments } from "./pr-comments";
 import { PRRoom } from "./pr-room";
@@ -20,6 +20,7 @@ export const PullRequestWrapper = ({
   prComments: Comment[];
   user: User;
 }) => {
+  const [activeTab, setActiveTab] = useState<"comments" | "room">("comments");
   useEffect(() => {
     socket.emit("join-pr-room", {
       pullRequestId: prId,
@@ -35,14 +36,34 @@ export const PullRequestWrapper = ({
   }, [prId, user.username]);
 
   return (
-    <div className="flex flex-row gap-4 justify-center items-start min-h-screen w-full p-4">
+    <div className="flex flex-row gap-4 justify-center items-start h-screen w-full p-4">
       <div className="w-7/10 h-full">
         <PRDetails pullRequest={pullRequest} />
         <DiffView diff={diff} />
       </div>
-      <div className="flex flex-col gap-4 h-screen w-3/10 sticky top-4 pb-8">
-        <PRComments prId={prId} prComments={prComments} />
-        <PRRoom prId={prId} user={user} />
+      <div className="flex flex-col h-screen w-3/10 sticky top-4 border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        <div className="flex flex-row border-b border-gray-200">
+          <button
+            className={`flex-1 py-3 text-sm font-semibold transition-colors ${activeTab === "comments" ? "border-b-2 border-blue-500 text-blue-600 bg-white" : "text-gray-500 hover:text-gray-800"}`}
+            onClick={() => setActiveTab("comments")}
+          >
+            Review Comments
+          </button>
+          <button
+            className={`flex-1 py-3 text-sm font-semibold transition-colors ${activeTab === "room" ? "border-b-2 border-blue-500 text-blue-600 bg-white" : "text-gray-500 hover:text-gray-800"}`}
+            onClick={() => setActiveTab("room")}
+          >
+            Live Chat
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-hidden h-full flex flex-col relative w-full">
+          {activeTab === "comments" ? (
+            <PRComments prId={prId} prComments={prComments} />
+          ) : (
+            <PRRoom prId={prId} user={user} />
+          )}
+        </div>
       </div>
     </div>
   );

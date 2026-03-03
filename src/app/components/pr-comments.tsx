@@ -17,6 +17,7 @@ export function PRComments({
 }) {
   const [comments, setComments] = useState<Comment[]>(prComments);
   const [showResolved, setShowResolved] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   const createCommentWithPrId = createComment.bind(null, prId, null);
 
@@ -49,10 +50,13 @@ export function PRComments({
     : filterCommentsByResolved(buildCommentTree(comments));
 
   return (
-    <div className="flex flex-col gap-4 justify-between border border-gray-200 p-4 rounded-lg w-full h-1/2">
+    <div className="flex flex-col gap-4 justify-between p-4 w-full h-full">
       <div className="flex flex-col gap-1 items-start">
         <h1 className="text-2xl font-bold">Comments</h1>
-        <button onClick={() => setShowResolved(!showResolved)}>
+        <button
+          onClick={() => setShowResolved(!showResolved)}
+          className="cursor-pointer hover:text-gray-800 border border-gray-200 px-2 py-1 rounded-md transition-colors"
+        >
           {showResolved ? "Hide Resolved" : "Show Resolved"}
         </button>
       </div>
@@ -64,30 +68,54 @@ export function PRComments({
         {commentTree.length === 0 && <p>No comments yet</p>}
       </div>
 
-      <form
-        action={createCommentWithPrId}
-        className="flex flex-row flex-wrap gap-2"
-      >
-        <input
-          type="text"
-          name="filePath"
-          className="border border-gray-300 rounded-md bg-white text-black mr-2 px-2"
-          placeholder="File Path"
-        />
-        <input
-          type="text"
-          name="lineNumber"
-          className="border border-gray-300 rounded-md bg-white text-black mr-2 px-2"
-          placeholder="Line Number"
-        />
-        <input
-          type="text"
-          name="comment"
-          className="border border-gray-300 rounded-md bg-white text-black grow mr-2 px-2"
-          placeholder="Comment"
-        />
-        <button className="bg-blue-500 text-white px-4 rounded-md">Send</button>
-      </form>
+      {showForm ? (
+        <form
+          action={(formData) => {
+            createCommentWithPrId(formData);
+            setShowForm(false);
+          }}
+          className="flex flex-col gap-2 pt-2 border-t border-gray-200"
+        >
+          <div className="flex flex-row gap-2">
+            <input
+              type="text"
+              name="filePath"
+              className="border border-gray-300 rounded-md bg-white text-black px-2 py-1 flex-1 text-sm"
+              placeholder="File Path"
+            />
+            <input
+              type="text"
+              name="lineNumber"
+              className="border border-gray-300 rounded-md bg-white text-black px-2 py-1 flex-1 text-sm"
+              placeholder="Line Number"
+            />
+          </div>
+          <textarea
+            name="comment"
+            className="border border-gray-300 rounded-md bg-white text-black px-2 py-2 min-h-[60px] text-sm"
+            placeholder="Write a comment..."
+          />
+          <div className="flex justify-end gap-2 mt-1">
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="text-gray-500 hover:text-gray-700 text-sm font-semibold px-2"
+            >
+              Cancel
+            </button>
+            <button className="bg-blue-600 hover:bg-blue-700 transition-colors text-white px-4 py-1.5 rounded-md text-sm font-semibold">
+              Submit Comment
+            </button>
+          </div>
+        </form>
+      ) : (
+        <button
+          onClick={() => setShowForm(true)}
+          className="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold rounded-md transition-colors border border-blue-200 shadow-sm"
+        >
+          + New Comment
+        </button>
+      )}
     </div>
   );
 }
