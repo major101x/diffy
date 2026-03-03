@@ -58,11 +58,16 @@ export const PullRequestWrapper = ({
         </div>
 
         <div className="flex-1 overflow-hidden h-full flex flex-col relative w-full">
-          {activeTab === "comments" ? (
+          <div
+            className={`w-full h-full ${activeTab === "comments" ? "block" : "hidden"}`}
+          >
             <PRComments prId={prId} prComments={prComments} />
-          ) : (
+          </div>
+          <div
+            className={`w-full h-full ${activeTab === "room" ? "block" : "hidden"}`}
+          >
             <PRRoom prId={prId} user={user} />
-          )}
+          </div>
         </div>
       </div>
     </div>
