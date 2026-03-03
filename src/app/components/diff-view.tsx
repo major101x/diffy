@@ -78,14 +78,6 @@ export function DiffView({ diff }: { diff: string }) {
         refractor.highlight(text, language).children,
     };
 
-    console.log(
-      tokenize(hunks, {
-        highlight: true,
-        refractor: refractorWrapper,
-        language: language,
-      }),
-    );
-
     return (
       <div
         key={`${oldRevision}-${newRevision}`}

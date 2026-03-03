@@ -5,7 +5,7 @@ export async function fetchData(
   url: string,
   type: "json" | "text" = "json",
   options?: {
-    method?: "GET" | "POST" | "PUT" | "DELETE";
+    method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     body?: string;
   },
 ) {
@@ -68,7 +68,11 @@ export async function redirectToPR(formData: FormData) {
   redirect(`/pull-request/${owner}/${repo}/${pull_number}`);
 }
 
-export async function createComment(prId: string, formData: FormData) {
+export async function createComment(
+  prId: string,
+  parentCommentId: number | null,
+  formData: FormData,
+) {
   const comment = formData.get("comment")?.toString();
   const filePath = formData.get("filePath")?.toString();
   const lineNumber = Number(formData.get("lineNumber"));
@@ -77,6 +81,7 @@ export async function createComment(prId: string, formData: FormData) {
     pullRequestId: Number(prId),
     filePath,
     lineNumber,
+    parentCommentId,
   });
   const response = await fetchData(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments`,
@@ -85,10 +90,33 @@ export async function createComment(prId: string, formData: FormData) {
       method: "POST",
       body: JSON.stringify({
         body: comment,
-        pullRequestId: Number(prId),
+        pullRequestId: prId,
         filePath,
         lineNumber,
+        parentCommentId,
       }),
+    },
+  );
+  return response;
+}
+
+export async function resolveComment(commentId: number) {
+  const response = await fetchData(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/${commentId}/resolve`,
+    "json",
+    {
+      method: "PATCH",
+    },
+  );
+  return response;
+}
+
+export async function unresolveComment(commentId: number) {
+  const response = await fetchData(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/${commentId}/unresolve`,
+    "json",
+    {
+      method: "PATCH",
     },
   );
   return response;

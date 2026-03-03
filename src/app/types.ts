@@ -30,4 +30,7 @@ export type Comment = {
   filePath: string;
   lineNumber: number;
   createdAt: Date;
+  resolved: boolean;
+  parentCommentId: number | null;
+  replies?: Comment[];
 };
