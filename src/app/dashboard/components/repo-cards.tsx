@@ -1,46 +1,65 @@
-import { RepoCard } from "@/app/types";
 import Link from "next/link";
+import { RepoCard } from "./repo-card";
+import { fetchData } from "@/app/lib/actions";
+import { RepoCard as RepoCardType } from "@/app/types";
 
-export function RepoCards({
-  repos,
+export async function RepoCards({
   page,
   perPage,
 }: {
-  repos: { data: RepoCard[]; totalCount: number };
   page: number;
   perPage: number;
 }) {
+  const repos = await fetchData(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/github/repos?page=${page}&per_page=${perPage}`,
+  );
   const isNextDisabled = page * perPage >= repos.totalCount;
   const isPrevDisabled = page <= 1;
 
   return (
-    <div>
-      <h1>Repo Cards</h1>
-      {repos.data.map((repo) => (
-        <Link
-          key={repo.id}
-          href={`/dashboard?owner=${repo.owner}&repo=${repo.name}`}
-        >
-          <h2>{repo.name}</h2>
-          <p>{repo.owner}</p>
-          <p>{repo.link}</p>
-        </Link>
-      ))}
-      {!isPrevDisabled ? (
-        <Link href={`/dashboard?page=${page - 1}&perPage=${perPage}`}>
-          Previous
-        </Link>
-      ) : (
-        <button disabled>Previous</button>
-      )}
+    <div className="w-full flex flex-col justify-center items-center">
+      <h1 className="text-gray-400 mb-6 text-lg">
+        Select a repo to get started
+      </h1>
+      <div className="flex flex-row gap-4 flex-wrap w-full justify-center items-center">
+        {repos.data.map((repo: RepoCardType) => (
+          <RepoCard key={repo.id} repo={repo} />
+        ))}
+      </div>
 
-      {!isNextDisabled ? (
-        <Link href={`/dashboard?page=${page + 1}&perPage=${perPage}`}>
-          Next
-        </Link>
-      ) : (
-        <button disabled>Next</button>
-      )}
+      <div className="flex flex-row gap-4 mt-4">
+        {!isPrevDisabled ? (
+          <Link
+            href={`/dashboard?page=${page - 1}&perPage=${perPage}`}
+            className="bg-white/80 hover:bg-white transition-all duration-200 text-black rounded-lg cursor-pointer px-4 py-2 font-medium"
+          >
+            Previous
+          </Link>
+        ) : (
+          <button
+            disabled
+            className="bg-white/50 text-black rounded-lg px-4 py-2 font-medium"
+          >
+            Previous
+          </button>
+        )}
+
+        {!isNextDisabled ? (
+          <Link
+            href={`/dashboard?page=${page + 1}&perPage=${perPage}`}
+            className="bg-white/80 hover:bg-white transition-all duration-200 text-black rounded-lg cursor-pointer px-4 py-2 font-medium"
+          >
+            Next
+          </Link>
+        ) : (
+          <button
+            disabled
+            className="bg-white/50 text-black rounded-lg px-4 py-2 font-medium"
+          >
+            Next
+          </button>
+        )}
+      </div>
     </div>
   );
 }
