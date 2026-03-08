@@ -6,6 +6,7 @@ import {
   resolveComment,
   unresolveComment,
 } from "../lib/actions";
+import { formatDistanceToNow } from "date-fns";
 
 export function CommentItem({
   comment,
@@ -38,7 +39,9 @@ export function CommentItem({
           />
           <div>
             <p>{comment.user.name}</p>
-            <p>{comment.createdAt.toString()}</p>
+            <p className="text-xs text-gray-500">
+              {formatDistanceToNow(new Date(comment.createdAt))} ago
+            </p>
           </div>
         </div>
         <p className="text-sm mt-1">{comment.body}</p>

@@ -34,3 +34,25 @@ export type Comment = {
   parentCommentId: number | null;
   replies?: Comment[];
 };
+
+export type PRCard = {
+  title: string;
+  number: number;
+  authorName: string | undefined;
+  repo: string;
+  owner: string;
+  id: number;
+  state: string;
+  htmlUrl: string;
+  base: string;
+  head: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type RepoCard = {
+  name: string;
+  owner: string;
+  id: number;
+  link: string;
+};

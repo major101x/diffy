@@ -2,7 +2,7 @@ import { PullRequest } from "../types";
 
 export function PRDetails({ pullRequest }: { pullRequest: PullRequest }) {
   return (
-    <div className="mb-6 border-b border-gray-200 pb-6 p-2 sticky top-0 z-50 bg-gray-900">
+    <div className="mb-6 pb-6 p-2 sticky top-0 pt-4 z-50 bg-[#0a0a0a]">
       <h1 className="text-2xl font-semibold text-gray-100 mb-2">
         {pullRequest.title}
       </h1>
@@ -21,7 +21,7 @@ export function PRDetails({ pullRequest }: { pullRequest: PullRequest }) {
           {pullRequest.changed_files} files changed
         </span>
       </div>
-      <div className="text-gray-800 text-base mt-4">{pullRequest.body}</div>
+      <div className="text-white text-base mt-4">{pullRequest.body}</div>
     </div>
   );
 }
