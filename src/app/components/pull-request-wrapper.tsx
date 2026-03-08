@@ -36,12 +36,12 @@ export const PullRequestWrapper = ({
   }, [prId, user.username]);
 
   return (
-    <div className="flex flex-row gap-4 justify-center items-start h-screen w-full p-4">
-      <div className="w-7/10 h-full">
+    <div className="flex flex-row gap-4 justify-center items-start w-full p-4">
+      <div className="w-7/10">
         <PRDetails pullRequest={pullRequest} />
         <DiffView diff={diff} />
       </div>
-      <div className="flex flex-col h-screen w-3/10 sticky top-4 border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      <div className="flex flex-col h-[calc(100vh-2rem)] w-3/10 sticky top-4 border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         <div className="flex flex-row border-b border-gray-200">
           <button
             className={`flex-1 py-3 text-sm font-semibold transition-colors ${activeTab === "comments" ? "border-b-2 border-blue-500 text-blue-600 bg-white" : "text-gray-500 hover:text-gray-800"}`}

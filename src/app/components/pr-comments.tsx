@@ -44,7 +44,6 @@ export function PRComments({
     };
   }, [prId]);
 
-  // console.log(comments);
   const commentTree = showResolved
     ? buildCommentTree(comments)
     : filterCommentsByResolved(buildCommentTree(comments));

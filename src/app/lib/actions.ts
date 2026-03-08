@@ -25,7 +25,10 @@ export async function fetchData(
   });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch data on the server");
+    const error = await response.json();
+    throw new Error(
+      `Failed to fetch from the server. error code: ${error.statusCode}`,
+    );
   }
 
   if (type === "json") {
