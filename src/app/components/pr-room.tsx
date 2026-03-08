@@ -117,12 +117,44 @@ export function PRRoom({ prId, user }: { prId: string; user: User }) {
     <div className="p-5 rounded-lg w-full h-full flex flex-col justify-between">
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">PR Room {prId}</h1>
-          <p>Connected: {isConnected.toString()}</p>
-          <p>User Count: {userCount}</p>
+          {/* <h1 className="text-2xl font-bold">PR Room {prId}</h1> */}
+          <p className="rounded-lg px-2 py-1 bg-white/10">
+            <span className="flex items-center gap-2 capitalize font-mono text-sm">
+              <span className="relative flex h-2 w-2">
+                <span
+                  className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                    isConnected ? "bg-green-400" : "bg-red-400"
+                  }`}
+                ></span>
+                <span
+                  className={`relative inline-flex rounded-full h-2 w-2 ${
+                    isConnected ? "bg-green-500" : "bg-red-500"
+                  }`}
+                ></span>
+              </span>
+              {isConnected ? "Connected" : "Disconnected"}
+            </span>
+          </p>
+          <p className="rounded-lg px-2 py-1 bg-white/10">
+            <span className="flex items-center gap-2 capitalize font-mono text-sm">
+              <span className="relative flex h-2 w-2">
+                <span
+                  className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                    userCount > 0 ? "bg-green-400" : "bg-red-400"
+                  }`}
+                ></span>
+                <span
+                  className={`relative inline-flex rounded-full h-2 w-2 ${
+                    userCount > 0 ? "bg-green-500" : "bg-red-500"
+                  }`}
+                ></span>
+              </span>
+              User count: {userCount}
+            </span>
+          </p>
         </div>
         <div className="flex justify-between items-center">
-          <p>
+          <p className="rounded-lg px-2 py-1 bg-white/10">
             {activeUsers.join(", ")} {activeUsers.length === 1 ? "is" : "are"}{" "}
             currently reviewing this PR
           </p>
@@ -139,31 +171,33 @@ export function PRRoom({ prId, user }: { prId: string; user: User }) {
         ))}
       </div>
 
-      <div className="flex gap-2 mt-5">
+      <div className="flex flex-col gap-2 mt-5">
         {typingUsers.length > 0 && (
           <p className="text-sm text-gray-500">
             {typingUsers.join(", ")} is typing...
           </p>
         )}
-        <input
-          type="text"
-          className="border border-gray-300 rounded-md bg-white text-black w-full"
-          placeholder="type message here..."
-          value={message}
-          onChange={handleMessageChange}
-        />
-        <button
-          className="bg-blue-500 text-white px-4 rounded-md"
-          onClick={() =>
-            socket.emit("send-message-to-pr-room", {
-              pullRequestId: prId,
-              message: message,
-              username: user.username,
-            })
-          }
-        >
-          Send
-        </button>
+        <div className="flex flex-row gap-2 w-full">
+          <input
+            type="text"
+            className="px-2 py-1 border border-gray-300 rounded-md bg-white text-black w-full"
+            placeholder="type message here..."
+            value={message}
+            onChange={handleMessageChange}
+          />
+          <button
+            className="bg-blue-500 text-white px-4 rounded-md"
+            onClick={() =>
+              socket.emit("send-message-to-pr-room", {
+                pullRequestId: prId,
+                message: message,
+                username: user.username,
+              })
+            }
+          >
+            Send
+          </button>
+        </div>
       </div>
     </div>
   );
