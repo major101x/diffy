@@ -12,13 +12,13 @@ export default async function Dashboard({
   const owner = (await searchParams).owner?.toString();
   const repo = (await searchParams).repo?.toString();
   const page = Number((await searchParams).page) || 1;
-  const perPage = Number((await searchParams).perPage) || 10;
+  const perPage = Number((await searchParams).perPage) || 100;
   const prPage = Number((await searchParams).prPage) || 1;
 
   const user = await getUser();
 
   return (
-    <div className="h-screen w-full px-4 flex flex-col justify-center items-center">
+    <div className="min-h-screen w-full px-4 flex flex-col justify-center items-center py-12">
       <h1 className="text-4xl font-bold mb-4">Welcome to Diffy!</h1>
       {!user.installationId && (
         <>

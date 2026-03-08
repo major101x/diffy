@@ -2,6 +2,7 @@ import Link from "next/link";
 import { RepoCard } from "./repo-card";
 import { fetchData } from "@/app/lib/actions";
 import { RepoCard as RepoCardType } from "@/app/types";
+import { SearchableRepoList } from "./searchable-repo-list";
 
 export async function RepoCards({
   page,
@@ -17,17 +18,13 @@ export async function RepoCards({
   const isPrevDisabled = page <= 1;
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center">
       <h1 className="text-gray-400 mb-6 text-lg">
         Select a repo to get started
       </h1>
-      <div className="flex flex-row gap-4 flex-wrap w-full justify-center items-center">
-        {repos.data.map((repo: RepoCardType) => (
-          <RepoCard key={repo.id} repo={repo} />
-        ))}
-      </div>
+      <SearchableRepoList repos={repos.data} />
 
-      <div className="flex flex-row gap-4 mt-4">
+      {/* <div className="flex flex-row gap-4 mt-4">
         {!isPrevDisabled ? (
           <Link
             href={`/dashboard?page=${page - 1}&perPage=${perPage}`}
@@ -59,7 +56,7 @@ export async function RepoCards({
             Next
           </button>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
